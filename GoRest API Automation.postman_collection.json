@@ -1,0 +1,494 @@
+{
+	"info": {
+		"_postman_id": "586c5a62-af7d-4a8b-bd74-6f1ab9a5448b",
+		"name": "GoRest API Automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Users List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get User List - Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get User List - Response time is less than 2s\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"    \"type\": \"array\",\r",
+							"    \"items\": [{\r",
+							"        type: \"object\",\r",
+							"        properties:{\r",
+							"         \"id\": {\r",
+							"            \"type\":\"integer\"\r",
+							"             },\r",
+							"         \"name\": {\r",
+							"             \"type\":\"string\"\r",
+							"             },\r",
+							"         \"email\": {\r",
+							"             \"type\":\"string\"\r",
+							"            },\r",
+							"         \"gender\": {\r",
+							"             \"type\":\"string\"\r",
+							"            },\r",
+							"         \"status\": {\r",
+							"             \"type\":\"string\"\r",
+							"            }\r",
+							"        },\r",
+							"        \"required\":\r",
+							"        [\"id\",\"name\",\"email\",\"gender\",\"status\"]\r",
+							"    }]\r",
+							"};\r",
+							"\r",
+							"pm.test('Get User List - Response schema type nodes verification', function() {\r",
+							"  pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/public/v2/users",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create a new user - Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Create a new user - Response time is less than 2s\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"const json = pm.response.json()\r",
+							"\r",
+							"pm.environment.set('newuser', json.id)\r",
+							"\r",
+							"pm.test('Create a new user - Response data verification', function() {\r",
+							"  pm.expect(json.id).to.equal(pm.environment.get(\"newuser\"));\r",
+							"  pm.expect(json.gender).to.equal(\"male\");\r",
+							"  pm.expect(json.name).to.equal(\"Geo Test\");\r",
+							"  pm.expect(json.email).to.equal(\"Geo.Test@test.com\");\r",
+							"  pm.expect(json.status).to.equal(\"active\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"Geo Test\", \"gender\":\"male\", \"email\":\"Geo.Test@test.com\", \"status\":\"active\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/public/v2/users",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Review Created user info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Review Created User Info - Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Review Created User Info - Response time is less than 2s\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"    \"type\": \"object\",\r",
+							"    \"items\": {\r",
+							"        type: \"object\",\r",
+							"        properties:{\r",
+							"         \"id\": {\r",
+							"            \"type\":\"integer\"\r",
+							"             },\r",
+							"         \"name\": {\r",
+							"             \"type\":\"string\"\r",
+							"             },\r",
+							"         \"email\": {\r",
+							"             \"type\":\"string\"\r",
+							"            },\r",
+							"         \"gender\": {\r",
+							"             \"type\":\"string\"\r",
+							"            },\r",
+							"         \"status\": {\r",
+							"             \"type\":\"string\"\r",
+							"            }\r",
+							"        },\r",
+							"        \"required\":\r",
+							"        [\"id\",\"name\",\"email\",\"gender\",\"status\"]\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.test('Review Created User Info - Response schema result verification', function() {\r",
+							"  pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json()\r",
+							"\r",
+							"pm.test('Review Created User Info - Response data verification', function() {\r",
+							"  pm.expect(json.id).to.equal(pm.environment.get(\"newuser\"));\r",
+							"  pm.expect(json.gender).to.equal(\"male\");\r",
+							"  pm.expect(json.name).to.equal(\"Geo Test\");\r",
+							"  pm.expect(json.email).to.equal(\"Geo.Test@test.com\");\r",
+							"  pm.expect(json.status).to.equal(\"active\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/public/v2/users/{{newuser}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{newuser}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update an existing user (just created one)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Update an existing user - Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Update an existing user - Response time is less than 2s\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"var schema = {\r",
+							"    \"type\": \"object\",\r",
+							"    \"items\": {\r",
+							"        type: \"object\",\r",
+							"        properties:{\r",
+							"         \"id\": {\r",
+							"            \"type\":\"integer\"\r",
+							"             },\r",
+							"         \"name\": {\r",
+							"             \"type\":\"string\"\r",
+							"             },\r",
+							"         \"email\": {\r",
+							"             \"type\":\"string\"\r",
+							"            },\r",
+							"         \"gender\": {\r",
+							"             \"type\":\"string\"\r",
+							"            },\r",
+							"         \"status\": {\r",
+							"             \"type\":\"string\"\r",
+							"            }\r",
+							"        },\r",
+							"        \"required\":\r",
+							"        [\"id\",\"name\",\"email\",\"gender\",\"status\"]\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.test('Update an existing user - Response schema result verification', function() {\r",
+							"  pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json()\r",
+							"\r",
+							"pm.test('Update an existing user - Response data verification', function() {\r",
+							"  pm.expect(json.id).to.equal(pm.environment.get(\"newuser\"));\r",
+							"  pm.expect(json.gender).to.equal(\"male\");\r",
+							"  pm.expect(json.name).to.equal(\"Geovanny Test\");\r",
+							"  pm.expect(json.email).to.equal(\"Geo.Test@test.com\");\r",
+							"  pm.expect(json.status).to.equal(\"inactive\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"Geovanny Test\", \"email\":\"Geo.Test@test.com\", \"status\":\"inactive\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/public/v2/users/{{newuser}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{newuser}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Review Updated user info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Review Updated User Info - Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Review Updated User Info - Response time is less than 2s\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"    \"type\": \"object\",\r",
+							"    \"items\": {\r",
+							"        type: \"object\",\r",
+							"        properties:{\r",
+							"         \"id\": {\r",
+							"            \"type\":\"integer\"\r",
+							"             },\r",
+							"         \"name\": {\r",
+							"             \"type\":\"string\"\r",
+							"             },\r",
+							"         \"email\": {\r",
+							"             \"type\":\"string\"\r",
+							"            },\r",
+							"         \"gender\": {\r",
+							"             \"type\":\"string\"\r",
+							"            },\r",
+							"         \"status\": {\r",
+							"             \"type\":\"string\"\r",
+							"            }\r",
+							"        },\r",
+							"        \"required\":\r",
+							"        [\"id\",\"name\",\"email\",\"gender\",\"status\"]\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.test('Review Updated User Info - Response schema result verification', function() {\r",
+							"  pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json()\r",
+							"\r",
+							"pm.test('Review Updated User Info - Response data verification', function() {\r",
+							"  pm.expect(json.id).to.equal(pm.environment.get(\"newuser\"));\r",
+							"  pm.expect(json.gender).to.equal(\"male\");\r",
+							"  pm.expect(json.name).to.equal(\"Geovanny Test\");\r",
+							"  pm.expect(json.email).to.equal(\"Geo.Test@test.com\");\r",
+							"  pm.expect(json.status).to.equal(\"inactive\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/public/v2/users/{{newuser}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{newuser}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete an existing user (just created one)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete an user - Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Delete an user - Response time is less than 2s\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/public/v2/users/{{newuser}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{newuser}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Review Deleted user info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Review Deleted User Info - Status code is 404 not found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Review Deleted User Info - Response time is less than 2s\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"let json = pm.response.json()\r",
+							"\r",
+							"pm.test('Review Deleted User Info - Response data verification', function() {\r",
+							"  pm.expect(json.message).to.equal(\"Resource not found\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/public/v2/users/{{newuser}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{newuser}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{Token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
